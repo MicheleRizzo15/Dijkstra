@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace dijkstra
 {
-    class Vertice
+    public class Vertice
     {
         string nome;
         int x, y;
@@ -26,7 +26,8 @@ namespace dijkstra
 
         private float GetDistanza(Vertice v1)
         {
-            return (float)(Math.Sqrt((double)(((double)Math.Pow((this.x - v1.x), 2)) + (double)(Math.Pow((this.y - v1.y), 2)))));
+            //return (float)(Math.Sqrt((double)(((double)Math.Pow((this.x - v1.x), 2)) + (double)(Math.Pow((this.y - v1.y), 2)))));
+            return Logica.GetDistanza(this, v1);
         }
 
         public bool Sovrapponi(List<Vertice> listV)
@@ -39,6 +40,11 @@ namespace dijkstra
                 }
             }
             return false;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return this.X == (obj as Vertice).X && this.Y == (obj as Vertice).Y || this.Nome == (obj as Vertice).Nome;
         }
     }
 }
