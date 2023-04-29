@@ -37,7 +37,7 @@ namespace dijkstra
         {
             label1.Text = "X: " + e.X.ToString();
             label2.Text = "Y: " + e.Y.ToString();
-            if (comboBox1.SelectedIndex == (int)Operazione.disegna_arco && selezionaVertice==true)
+            if (comboBox1.SelectedIndex == (int)Operazione.disegna_arco && selezionaVertice == true)
             {
                 DisegnaTotali();
                 disegnaVertice(v1tmp);
@@ -84,7 +84,6 @@ namespace dijkstra
                             {
                                 verticiTotali.Add(fcv.V);
                                 MessageBox.Show("Vertice aggiunto con successo");
-                                label3.Text = "Count Vertici: " + verticiTotali.Count;
                                 DisegnaTotali();
                             }
                             else
@@ -132,7 +131,6 @@ namespace dijkstra
                                         archiTotali.Add(fca.Arco);
                                         MessageBox.Show("Arco aggiunto con successo");
                                         disegnaVertice(v2tmp);
-                                        label4.Text = "Count archi: " + archiTotali.Count;
                                         DisegnaTotali();
                                     }
                                     else
@@ -160,8 +158,39 @@ namespace dijkstra
                     }
 
                     ; break;
+
+                case (int)Operazione.cancella_vertice:
+                    v1tmp = Logica.TrovaVertice(e.X, e.Y, verticiTotali);
+                    if (v1tmp != null)
+                    {
+                        archiTotali.RemoveAll(x => x.V1 == v1tmp || x.V2 == v1tmp);
+                        verticiTotali.Remove(v1tmp);
+                        MessageBox.Show($"Il vertice: {v1tmp.Nome} è stato eliminato con successo");
+                        DisegnaTotali();
+                        v1tmp = null;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Impossibile trovare il vertice di riferimento");
+                    }
+                    ; break;
+                case (int)Operazione.cancella_arco:
+                    List<Arco> archiTMP = Logica.TrovaArchi(archiTotali, e.X, e.Y);
+                    if (archiTMP != null)
+                    {
+                        archiTMP.ForEach(delegate (Arco a) { archiTotali.RemoveAll(x => x == a); });
+                        MessageBox.Show($"Archi eliminati con successo: {archiTMP.Count}");
+                        DisegnaTotali();
+                        archiTMP = null;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Impossibile trovare un arco da eliminare");
+                    }
+                        ; break;
             }
         }
+
 
         public void DisegnaArchi()
         {
@@ -190,6 +219,8 @@ namespace dijkstra
             panel1.Refresh();
             Graphics g = panel1.CreateGraphics();
             Pen penna = new Pen(Color.Black, 1);
+            label4.Text = "Count archi: " + archiTotali.Count;
+            label3.Text = "Count Vertici: " + verticiTotali.Count;
             DisegnaVertici();
             DisegnaArchi();
         }

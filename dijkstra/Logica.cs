@@ -17,15 +17,35 @@ namespace dijkstra
         /// <returns>riferimento al vertice, null se non disponibile</returns>
         public static Vertice TrovaVertice(int x, int y, List<Vertice> lv)
         {
-            for(int i=0; i < lv.Count; i++)
+            for (int i = 0; i < lv.Count; i++)
             {
-                if (GetDistanza(lv[i], x, y)<=Vertice.Raggio*2)
+                if (GetDistanza(lv[i], x, y) <= Vertice.Raggio * 2)
                 {
                     return lv[i];
                 }
             }
 
             return null;
+        }
+
+        public static List<Arco> TrovaArchi(List<Arco> la, int x, int y)
+        {
+            List<Arco> archiTrovati = new List<Arco>();
+            for (int i = 0; i < la.Count; i++)
+            {
+                if (Convert.ToInt32(Math.Abs(((la[i].V2.Y - la[i].V1.Y) * x) + ((la[i].V1.X - la[i].V2.X)*y) - ((la[i].V1.X)*(la[i].V2.Y)) + (la[i].V1.Y)*(la[i].V2.X))/Math.Sqrt(Math.Pow((la[i].V2.Y - la[i].V1.Y),2)+ Math.Pow((la[i].V1.X - la[i].V2.X), 2)))<=Vertice.Raggio)
+                {
+                    archiTrovati.Add(la[i]);
+                }
+            }
+            if (archiTrovati.Count>0)
+            {
+                return archiTrovati;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public static float GetDistanza(Vertice v1, Vertice v2)
