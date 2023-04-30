@@ -14,14 +14,18 @@ namespace dijkstra
     {
         List<Vertice> verticiTotali;
         List<Arco> archiTotali;
+        List<Arco> archiDijkstra;
         Vertice v1tmp, v2tmp;
         bool selezionaVertice;
+        bool dijkstra;
         public Form1()
         {
             InitializeComponent();
             selezionaVertice = false;
+            dijkstra = false;
             verticiTotali = new List<Vertice>();
             archiTotali = new List<Arco>();
+            archiDijkstra = new List<Arco>();
             comboBox1.DataSource = null;
             comboBox1.DataSource = Enum.GetValues(typeof(Operazione));
             comboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -231,6 +235,11 @@ namespace dijkstra
             v2tmp = null;
             selezionaVertice = false;
             DisegnaTotali();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+
         }
 
         private void panel1_Paint(object sender, PaintEventArgs e)

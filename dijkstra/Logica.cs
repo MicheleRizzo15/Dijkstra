@@ -57,5 +57,93 @@ namespace dijkstra
         {
             return (float)(Math.Sqrt((double)(((double)Math.Pow((x - v1.X), 2)) + (double)(Math.Pow((y - v1.Y), 2)))));
         }
-    }
+
+		public static List<Arco> Disjkstra(List<Vertice> nodi, List<Arco> archi)
+		{
+			List<Arco> archiDisjkstra = new List<Arco>();
+			int[] costoPerRaggungereIlNodoDallaPartenza = new int[nodi.Count];
+			List<int> nodiSelezionati = new List<int>();
+			for (int i = 0; i < nodi.Count; i++)
+			{
+				costoPerRaggungereIlNodoDallaPartenza[i] = -1;
+			}
+			nodiSelezionati.Add(0);
+			costoPerRaggungereIlNodoDallaPartenza[nodiSelezionati[nodiSelezionati.Count - 1]] = 0;
+			while (nodiSelezionati.Count + 1 < nodi.Count)
+			{
+				int min = -1;
+				int indexMin = -1;
+				for (int i = 0; i < archi.Count; i++)
+				{
+					if (archi[i].V1 == nodi[nodiSelezionati[nodiSelezionati.Count - 1]])
+					{
+						//sono sull'arco del nodo
+						if (costoPerRaggungereIlNodoDallaPartenza[nodi.IndexOf(archi[i].V2)] == -1 || costoPerRaggungereIlNodoDallaPartenza[nodi.IndexOf(archi[i].V2)] < archi[i].Costo)
+						{
+							costoPerRaggungereIlNodoDallaPartenza[nodi.IndexOf(archi[i].V2)] = archi[i].Costo;
+							if (min == -1 || min > archi[i].Costo)
+							{
+								if (min == -1)
+								{
+									archiDisjkstra.Add(archi[i]);
+								}
+								else
+								{
+									archiDisjkstra.RemoveAll(x => x.V1 == nodi[nodiSelezionati[nodiSelezionati.Count - 1]] && x.Costo == costoPerRaggungereIlNodoDallaPartenza[nodiSelezionati[nodiSelezionati.Count - 1]]);
+									archiDisjkstra.Add(archi[i]);
+								}
+								min = archi[i].Costo;
+								indexMin = i;
+							}
+						}
+					}
+					else if (archi[i].V2 == nodi[nodiSelezionati[nodiSelezionati.Count - 1]])
+					{
+						//sono sull'arco del nodo
+						if (costoPerRaggungereIlNodoDallaPartenza[nodi.IndexOf(archi[i].V1)] == -1 || costoPerRaggungereIlNodoDallaPartenza[nodi.IndexOf(archi[i].V1)] < archi[i].Costo)
+						{
+							costoPerRaggungereIlNodoDallaPartenza[nodi.IndexOf(archi[i].V1)] = archi[i].Costo;
+							if (min == -1 || min > archi[i].Costo)
+							{
+								if (min == -1)
+								{
+									archiDisjkstra.Add(archi[i]);
+								}
+								else
+								{
+									archiDisjkstra.RemoveAll(x => x.V2 == nodi[nodiSelezionati[nodiSelezionati.Count - 1]] && x.Costo == costoPerRaggungereIlNodoDallaPartenza[nodiSelezionati[nodiSelezionati.Count - 1]]);
+									archiDisjkstra.Add(archi[i]);
+								}
+								min = archi[i].Costo;
+								indexMin = i;
+							}
+						}
+					}
+				}
+				if (indexMin != -1)
+				{
+					nodiSelezionati.Add(indexMin);
+				}
+			}
+			for (int i = 0; i < archi.Count; i++)
+			{
+				if (archi[i].V1 == nodi[nodiSelezionati[nodiSelezionati.Count - 1]])
+				{
+					if (costoPerRaggungereIlNodoDallaPartenza[nodi.IndexOf(archi[i].V2)] == -1 || costoPerRaggungereIlNodoDallaPartenza[nodi.IndexOf(archi[i].V2)] < archi[i].Costo)
+					{
+						costoPerRaggungereIlNodoDallaPartenza[nodi.IndexOf(archi[i].V2)] = archi[i].Costo;
+					}
+				}
+				else if (archi[i].V2 == nodi[nodiSelezionati[nodiSelezionati.Count - 1]])
+				{
+					//sono sull'arco del nodo
+					if (costoPerRaggungereIlNodoDallaPartenza[nodi.IndexOf(archi[i].V1)] == -1 || costoPerRaggungereIlNodoDallaPartenza[nodi.IndexOf(archi[i].V1)] < archi[i].Costo)
+					{
+						costoPerRaggungereIlNodoDallaPartenza[nodi.IndexOf(archi[i].V1)] = archi[i].Costo;
+					}
+				}
+			}
+			return archiDisjkstra;
+		}
+	}
 }
