@@ -155,7 +155,16 @@ namespace dijkstra
                 vcc[indiceDistanzaMinore].Scelto = true;
             }
 
+            for (int j = 0; j < archi.Count; j++)
+            {
+                if (archi[j].Costo == Math.Abs(vcc[nodi.IndexOf(archi[j].V1)].Costo - vcc[nodi.IndexOf(archi[j].V2)].Costo))
+                {
+                    archiDisjkstra.Add(archi[j]);
+                }
+            }
+
             return archiDisjkstra;
+
 
         }
 
