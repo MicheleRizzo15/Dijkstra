@@ -239,7 +239,31 @@ namespace dijkstra
 
         private void button1_Click(object sender, EventArgs e)
         {
+            archiDijkstra = Logica.Disjkstra(verticiTotali, archiTotali, verticiTotali[0]);
+            DisegnaDijsktra();
+        }
 
+        private void DisegnaDijsktra()
+        {
+            panel1.Refresh();
+            Graphics g = panel1.CreateGraphics();
+            Pen penna = new Pen(Color.Black, 1);
+            label4.Text = "Count archi: " + archiDijkstra.Count;
+            label3.Text = "Count Vertici: " + verticiTotali.Count;
+            DisegnaVertici();
+            DisegnaArchiD();
+        }
+
+        private void DisegnaArchiD()
+        {
+            Graphics g = panel1.CreateGraphics();
+            Pen penna = new Pen(Color.Gray, 1);
+            foreach (Arco item in archiDijkstra)
+            {
+                //g.DrawEllipse(penna, item.X, item.Y, 1, 1);
+                g.DrawString(item.Costo.ToString(), new Font("arial", 12), new SolidBrush(Color.Red), new Point(Convert.ToInt32(Math.Abs((item.V1.X + item.V2.X) / 2)), Convert.ToInt32(Math.Abs((item.V1.Y + item.V2.Y) / 2))));
+                g.DrawLine(penna, new Point(item.V1.X, item.V1.Y), new Point(item.V2.X, item.V2.Y));
+            }
         }
 
         private void panel1_Paint(object sender, PaintEventArgs e)

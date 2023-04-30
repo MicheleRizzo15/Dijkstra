@@ -58,92 +58,123 @@ namespace dijkstra
             return (float)(Math.Sqrt((double)(((double)Math.Pow((x - v1.X), 2)) + (double)(Math.Pow((y - v1.Y), 2)))));
         }
 
-		public static List<Arco> Disjkstra(List<Vertice> nodi, List<Arco> archi)
-		{
-			List<Arco> archiDisjkstra = new List<Arco>();
-			int[] costoPerRaggungereIlNodoDallaPartenza = new int[nodi.Count];
-			List<int> nodiSelezionati = new List<int>();
-			for (int i = 0; i < nodi.Count; i++)
-			{
-				costoPerRaggungereIlNodoDallaPartenza[i] = -1;
-			}
-			nodiSelezionati.Add(0);
-			costoPerRaggungereIlNodoDallaPartenza[nodiSelezionati[nodiSelezionati.Count - 1]] = 0;
-			while (nodiSelezionati.Count + 1 < nodi.Count)
-			{
-				int min = -1;
-				int indexMin = -1;
-				for (int i = 0; i < archi.Count; i++)
-				{
-					if (archi[i].V1 == nodi[nodiSelezionati[nodiSelezionati.Count - 1]])
-					{
-						//sono sull'arco del nodo
-						if (costoPerRaggungereIlNodoDallaPartenza[nodi.IndexOf(archi[i].V2)] == -1 || costoPerRaggungereIlNodoDallaPartenza[nodi.IndexOf(archi[i].V2)] < archi[i].Costo)
-						{
-							costoPerRaggungereIlNodoDallaPartenza[nodi.IndexOf(archi[i].V2)] = archi[i].Costo;
-							if (min == -1 || min > archi[i].Costo)
-							{
-								if (min == -1)
-								{
-									archiDisjkstra.Add(archi[i]);
-								}
-								else
-								{
-									archiDisjkstra.RemoveAll(x => x.V1 == nodi[nodiSelezionati[nodiSelezionati.Count - 1]] && x.Costo == costoPerRaggungereIlNodoDallaPartenza[nodiSelezionati[nodiSelezionati.Count - 1]]);
-									archiDisjkstra.Add(archi[i]);
-								}
-								min = archi[i].Costo;
-								indexMin = i;
-							}
-						}
-					}
-					else if (archi[i].V2 == nodi[nodiSelezionati[nodiSelezionati.Count - 1]])
-					{
-						//sono sull'arco del nodo
-						if (costoPerRaggungereIlNodoDallaPartenza[nodi.IndexOf(archi[i].V1)] == -1 || costoPerRaggungereIlNodoDallaPartenza[nodi.IndexOf(archi[i].V1)] < archi[i].Costo)
-						{
-							costoPerRaggungereIlNodoDallaPartenza[nodi.IndexOf(archi[i].V1)] = archi[i].Costo;
-							if (min == -1 || min > archi[i].Costo)
-							{
-								if (min == -1)
-								{
-									archiDisjkstra.Add(archi[i]);
-								}
-								else
-								{
-									archiDisjkstra.RemoveAll(x => x.V2 == nodi[nodiSelezionati[nodiSelezionati.Count - 1]] && x.Costo == costoPerRaggungereIlNodoDallaPartenza[nodiSelezionati[nodiSelezionati.Count - 1]]);
-									archiDisjkstra.Add(archi[i]);
-								}
-								min = archi[i].Costo;
-								indexMin = i;
-							}
-						}
-					}
-				}
-				if (indexMin != -1)
-				{
-					nodiSelezionati.Add(indexMin);
-				}
-			}
-			for (int i = 0; i < archi.Count; i++)
-			{
-				if (archi[i].V1 == nodi[nodiSelezionati[nodiSelezionati.Count - 1]])
-				{
-					if (costoPerRaggungereIlNodoDallaPartenza[nodi.IndexOf(archi[i].V2)] == -1 || costoPerRaggungereIlNodoDallaPartenza[nodi.IndexOf(archi[i].V2)] < archi[i].Costo)
-					{
-						costoPerRaggungereIlNodoDallaPartenza[nodi.IndexOf(archi[i].V2)] = archi[i].Costo;
-					}
-				}
-				else if (archi[i].V2 == nodi[nodiSelezionati[nodiSelezionati.Count - 1]])
-				{
-					//sono sull'arco del nodo
-					if (costoPerRaggungereIlNodoDallaPartenza[nodi.IndexOf(archi[i].V1)] == -1 || costoPerRaggungereIlNodoDallaPartenza[nodi.IndexOf(archi[i].V1)] < archi[i].Costo)
-					{
-						costoPerRaggungereIlNodoDallaPartenza[nodi.IndexOf(archi[i].V1)] = archi[i].Costo;
-					}
-				}
-			}
-			return archiDisjkstra;
-		}
-	}
+
+
+
+
+        private class VerticeConCosto
+        {
+            Vertice v;
+            int costo;
+            bool scelto;
+            public Vertice Nodo { get => v; set => v = value; }
+            public int Costo { get => costo; set => costo = value; }
+            public bool Scelto { get => scelto; set => scelto = value; }
+        }
+        public static List<Arco> Disjkstra(List<Vertice> nodi, List<Arco> archi, Vertice partenza)
+        {
+            List<Arco> archiDisjkstra = new List<Arco>();
+            List<VerticeConCosto> vcc = new List<VerticeConCosto>();
+            VerticeConCosto vccTmp;
+            int[] distanze = new int[nodi.Count];
+            //---->INIZIALIZZAZIONE
+            for (int i = 0; i < nodi.Count; i++)
+            {
+                vccTmp = new VerticeConCosto();
+                vccTmp.Nodo = nodi[i];
+                vccTmp.Scelto = false;
+                vccTmp.Costo = -1;
+                distanze[i] = -1;
+                vcc.Add(vccTmp);
+            }
+            //<----INIZIALIZZAIZONE
+
+            int indiceNodoDiPartenza = nodi.IndexOf(partenza);
+            int indiceNodo;
+            distanze[indiceNodoDiPartenza] = 0;
+            for (int i = 0; i < archi.Count; i++)
+            {
+                if (archi[i].V1 == nodi[indiceNodoDiPartenza])
+                {
+                    indiceNodo = nodi.IndexOf(archi[i].V2);
+                    vcc[indiceNodo].Costo = archi[i].Costo;
+                    distanze[indiceNodo] = archi[i].Costo;
+                }
+                else if (archi[i].V2 == nodi[indiceNodoDiPartenza])
+                {
+                    indiceNodo = nodi.IndexOf(archi[i].V1);
+                    vcc[indiceNodo].Costo = archi[i].Costo;
+                    distanze[indiceNodo] = archi[i].Costo;
+                }
+            }
+            vcc[indiceNodoDiPartenza].Costo = 0;
+            vcc[indiceNodoDiPartenza].Scelto = true;
+            int indiceDistanzaMinore;
+            //DISTAZNE OK
+
+            for (int counter = 0; counter < nodi.Count - 1; counter++)
+            {
+                indiceDistanzaMinore = TrovaMinimoDistanzaNonScelto(distanze, vcc); //OK
+                for (int i = 0; i < archi.Count; i++)
+                {
+                    if (archi[i].V1 == nodi[indiceDistanzaMinore])
+                    {
+                        int indiceNodo2 = nodi.IndexOf(archi[i].V2);
+                        if (distanze[indiceNodo2] == -1)
+                        {
+                            vcc[indiceNodo2].Costo = vcc[indiceDistanzaMinore].Costo + archi[i].Costo;
+                            distanze[indiceNodo2] = vcc[indiceNodo2].Costo;
+                        }
+                        else if (distanze[indiceNodo2] > vcc[indiceDistanzaMinore].Costo + archi[i].Costo)
+                        {
+                            if (vcc[indiceNodo2].Scelto == false)
+                            {
+                                vcc[indiceNodo2].Costo = vcc[indiceDistanzaMinore].Costo + archi[i].Costo;
+                                distanze[indiceNodo2] = vcc[indiceNodo2].Costo;
+                            }
+                        }
+                    }
+                    else if (archi[i].V2 == nodi[indiceDistanzaMinore])
+                    {
+                        int indiceNodo2 = nodi.IndexOf(archi[i].V1);
+                        if (distanze[indiceNodo2] == -1)
+                        {
+                            vcc[indiceNodo2].Costo = vcc[indiceDistanzaMinore].Costo + archi[i].Costo;
+                            distanze[indiceNodo2] = vcc[indiceNodo2].Costo;
+                        }
+                        else if (distanze[indiceNodo2] > vcc[indiceDistanzaMinore].Costo + archi[i].Costo)
+                        {
+                            if (vcc[indiceNodo2].Scelto == false)
+                            {
+                                vcc[indiceNodo2].Costo = vcc[indiceDistanzaMinore].Costo + archi[i].Costo;
+                                distanze[indiceNodo2] = vcc[indiceNodo2].Costo;
+                            }
+                        }
+                    }
+                }
+                vcc[indiceDistanzaMinore].Scelto = true;
+            }
+
+            return archiDisjkstra;
+
+        }
+
+        private static int TrovaMinimoDistanzaNonScelto(int[] distanze, List<VerticeConCosto> vcc) //OK
+        {
+            int index = -1;
+            int valMin = -1;
+            for (int i = 0; i < distanze.Length; i++)
+            {
+                if (vcc[i].Scelto == false)
+                {
+                    if ((distanze[i] != -1) && (valMin == -1 || distanze[i] < valMin))
+                    {
+                        index = i;
+                        valMin = distanze[i];
+                    }
+                }
+            }
+            return index;
+        }
+    }
 }
