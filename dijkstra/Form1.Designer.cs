@@ -3,6 +3,7 @@ namespace dijkstra
 {
     partial class Form1
     {
+
         /// <summary>
         /// Variabile di progettazione necessaria.
         /// </summary>

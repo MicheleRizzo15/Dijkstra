@@ -9,6 +9,8 @@ namespace dijkstra
     /// <summary>
     /// Classe statica che raccoglie la logica di funzioamento dell'algorimto di Dijkstra e implementa alcune funzioni utili e usate nelle varie classi e form
     /// </summary>
+    /// 
+
     public static class Logica
     {
         #region Trova archi-Nodi a partire da x e y in una lista
